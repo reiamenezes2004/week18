@@ -6,13 +6,18 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
     <script src="products.js"></script>
     <style>
-        .product{
+        .product {
             border: 1px grey solid;
             padding: 20px;
-            margin:20px;
+            margin: 20px;
             text-align: center;
         }
     </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        };
+    </script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous" />
     <link rel="manifest" href="./petstore.webmanifest">
@@ -44,64 +49,65 @@
                     <button @click="addToCart(product)" :disabled="!canAddToCart(product)">
                         {{ product.availableInventory === cartCount(product.id) ? 'All out!' : 'Add to cart' }}
                     </button>
-                    <span v-if="product.availableInventory === cartCount(product.id) || product.availableInventory - cartCount(product.id)<5">
+                    <span
+                        v-if="product.availableInventory === cartCount(product.id) || product.availableInventory - cartCount(product.id)<5">
                         Only {{ product.availableInventory - cartItemCount }} left!
                     </span>
                 </div>
             </div>
-            
-                    <button :disabled="!canAddToCart(product)" v-else>
-                        Add to cart
-                    </button>
-                </div>
-            </div>
-            <div v-else>
-                <h2>Checkout</h2>
-                <p>
-                    <strong>First Name:</strong>
-                    <input v-model.trim="order.firstName" />
-                </p>
-                <p>
-                    <strong>Last Name:</strong>
-                    <input v-model.trim="order.lastName" />
-                </p>
-                <p><strong>Address:</strong> <input v-model="order.address" /></p>
-                <p><strong>City:</strong> <input v-model="order.city" /></p>
 
-                <p>
-                    <strong>State:</strong>
-                    <select v-model="order.state" class="form-control">
-                        <option disabled value="">State</option>
-                        <option v-for="(abbreviation, state) in states" :value="abbreviation">{{ state }}</option>
-                    </select>
-                </p>
-                <p><strong>Zip/Postal Code:</strong> <input v-model="order.zip" /></p>
+            <button :disabled="!canAddToCart(product)" v-else>
+                Add to cart
+            </button>
+    </div>
+    </div>
+    <div v-else>
+        <h2>Checkout</h2>
+        <p>
+            <strong>First Name:</strong>
+            <input v-model.trim="order.firstName" />
+        </p>
+        <p>
+            <strong>Last Name:</strong>
+            <input v-model.trim="order.lastName" />
+        </p>
+        <p><strong>Address:</strong> <input v-model="order.address" /></p>
+        <p><strong>City:</strong> <input v-model="order.city" /></p>
 
-                <p>
-                    <input type="checkbox" id="gift" value="true" v-model="order.gift">
-                    <label for="gift">Ship As Gift?</label>
-                </p>
+        <p>
+            <strong>State:</strong>
+            <select v-model="order.state" class="form-control">
+                <option disabled value="">State</option>
+                <option v-for="(abbreviation, state) in states" :value="abbreviation">{{ state }}</option>
+            </select>
+        </p>
+        <p><strong>Zip/Postal Code:</strong> <input v-model="order.zip" /></p>
 
-                <p>
-                    <input type="radio" id="home" value="Home" v-model="order.method">
-                    <label for="home">Home</label>
-                    <input type="radio" id="business" value="Business" v-model="order.method">
-                    <label for="business">Business</label>
-                </p>
+        <p>
+            <input type="checkbox" id="gift" value="true" v-model="order.gift">
+            <label for="gift">Ship As Gift?</label>
+        </p>
 
-                <h2>Order Information</h2>
-                <p>First Name: {{ order.firstName }}</p>
-                <p>Last Name: {{ order.lastName }}</p>
-                <p>Address: {{ order.address }}</p>
-                <p>City: {{ order.city }}</p>
-                <p>Zip: {{ order.zip }}</p>
-                <p>State: {{ order.state }}</p>
-                <p>Method: {{ order.method }}</p>
-                <p>Gift: {{ order.gift }}</p>
+        <p>
+            <input type="radio" id="home" value="Home" v-model="order.method">
+            <label for="home">Home</label>
+            <input type="radio" id="business" value="Business" v-model="order.method">
+            <label for="business">Business</label>
+        </p>
 
-                <button @click="submitForm">Place Order</button>
-            </div>
-        </main>
+        <h2>Order Information</h2>
+        <p>First Name: {{ order.firstName }}</p>
+        <p>Last Name: {{ order.lastName }}</p>
+        <p>Address: {{ order.address }}</p>
+        <p>City: {{ order.city }}</p>
+        <p>Zip: {{ order.zip }}</p>
+        <p>State: {{ order.state }}</p>
+        <p>Method: {{ order.method }}</p>
+        <p>Gift: {{ order.gift }}</p>
+
+        <button @click="submitForm">Place Order</button>
+    </div>
+    </main>
     </div>
     <script type="text/javascript">
         let webstore = new Vue({
